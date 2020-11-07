@@ -62,12 +62,12 @@ namespace HTTP_Server
                 msg += reader.ReadLine() + "\n";
             }
 
-            Debug.WriteLine("Request: \n" + msg);
-
+            Console.WriteLine("Request: \n" + msg);
+            /*
             Request req = Request.GetRequest(msg);
             Response resp = Response.From(req);
             resp.Post(client.GetStream());
-
+            */
         }
     }
 }
