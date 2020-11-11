@@ -37,11 +37,12 @@ namespace HTTP_Server
 
             while(running)
             {
-                Console.WriteLine("Waiting for connection..");
+                //Eine Connection etablieren und diese halten sntatt immer wieder eine request-based erstellen
+                Debug.WriteLine("Waiting for connection..");
 
                 TcpClient client = listener.AcceptTcpClient();
 
-                Console.WriteLine("Client connected!");
+                Debug.WriteLine("Client connected!");
 
                 HandleClient(client);
 
@@ -62,16 +63,55 @@ namespace HTTP_Server
                 msg += (char) reader.Read();
             }
 
-            Console.WriteLine("Request: \n" + msg);
+            Debug.WriteLine("Request: \n" + msg);
 
             Request request = new Request(msg);
-            Console.WriteLine("Method:" + request.Method);
-            Console.WriteLine("Indentifier:" + request.Identifier);
-            Console.WriteLine("Command:" + request.Command);
-            Console.WriteLine("Version:" + request.Version);
-            Console.WriteLine("ContentType:" + request.ContentType);
-            Console.WriteLine("ContentLength:" + request.ContentLength);
-            Console.WriteLine("Payload:" + request.Payload);
+            Debug.WriteLine("Method:" + request.Method);
+            Debug.WriteLine("Indentifier:" + request.Identifier);
+            Debug.WriteLine("Command:" + request.Command);
+            Debug.WriteLine("Version:" + request.Version);
+            Debug.WriteLine("ContentType:" + request.ContentType);
+            Debug.WriteLine("ContentLength:" + request.ContentLength);
+            Debug.WriteLine("Payload:" + request.Payload);
+
+            if(String.Compare(request.GetMethod(), "GET ") == 0)
+            {
+                if(String.Compare(request.Identifier, "all") == 0)
+                {
+                    msg = "show all messages";
+                }
+                else
+                {
+                    msg = "show message on position" + request.Identifier;
+                }
+            }
+            else if (String.Compare(request.GetMethod(), "POST ") == 0)
+            {
+                msg = "new message added";
+            }
+            else if (String.Compare(request.GetMethod(), "PUT ") == 0)
+            { 
+                if (String.Compare(request.Identifier, "all") == 0)
+                {
+                    msg = "message identifier not found";
+                }
+                else
+                {
+                    msg = "put new message on position " + request.Identifier;
+                }
+            }
+            else if (String.Compare(request.GetMethod(), "DELETE ") == 0)
+            {
+                if (String.Compare(request.Identifier, "all") == 0)
+                {
+                    msg = "message identifier not found";
+                }
+                else
+                {
+                    msg = "message deleted on position " + request.Identifier;
+                }
+            }
+            Console.WriteLine(msg + " " + request.GetLogEntry());
         }
     }
 }

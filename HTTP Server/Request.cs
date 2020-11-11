@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -16,6 +17,8 @@ namespace HTTP_Server
         public string Payload;
         
         /*Später Split mit Substrings verbessern*/
+        /*String gehören noch getrimmt
+         z.B. "GET " zu "GET"*/
         public Request(string _request)
         {
             string[] lines = _request.Split("\r\n");
@@ -23,8 +26,19 @@ namespace HTTP_Server
             Method = firstline[0];
             Command = firstline[1];
             Version = firstline[3];
+            
+            
             string[] identifier = firstline[2].Split(" ");
-            Identifier = identifier[0];
+            Debug.WriteLine("*" + identifier[0] + "*");
+
+            if (string.IsNullOrEmpty(identifier[0]) || String.Compare(identifier[0], "all ") == 0)
+            {
+                Identifier = "all";
+            }
+            else
+            {
+                Identifier = identifier[0];
+            }
             /*
               int i = 1;
               foreach (var line in lines)
@@ -34,7 +48,7 @@ namespace HTTP_Server
                   i++;
               }
             */
-              foreach(var line in lines)
+            foreach (var line in lines)
               {
                   string[] pairs = line.Split(":");
                   if(String.Compare(pairs[0] , "Content-Type") == 0)
@@ -49,7 +63,7 @@ namespace HTTP_Server
             
             Payload = GetRequestMessage(_request);
         }
-       
+
         //Das geht irgendwie anders, keine Ahnung. bin c++ gwohnt
         public string GetMethod()
         {
@@ -81,14 +95,7 @@ namespace HTTP_Server
 
         public string GetLogEntry()
         {
-            /* Entries be like:
-            lists all messages: GET /messages
-            add message: POST /messages 
-            show first message: GET /messages/1
-            show third message: GET /messages/3
-            update first message: PUT /messages/1 (Payload: the message)
-            remove first message: DELETE /messages/1
-            */
+           
             string logEntry = Method + " /" + Command +  "/" + Identifier;
             return logEntry;
         }
