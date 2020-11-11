@@ -4,10 +4,10 @@ C:\Users\ThomasPleiner\source\repos\HTTP Server\HTTP Server\bin\Debug\netcoreapp
 C:\Users\ThomasPleiner\source\repos\HTTP Server\HTTP Server\bin\Debug\netcoreapp3.1\HTTP Server.runtimeconfig.dev.json
 C:\Users\ThomasPleiner\source\repos\HTTP Server\HTTP Server\bin\Debug\netcoreapp3.1\HTTP Server.dll
 C:\Users\ThomasPleiner\source\repos\HTTP Server\HTTP Server\bin\Debug\netcoreapp3.1\HTTP Server.pdb
-C:\Users\ThomasPleiner\source\repos\HTTP Server\HTTP Server\obj\Debug\netcoreapp3.1\HTTP Server.csprojAssemblyReference.cache
 C:\Users\ThomasPleiner\source\repos\HTTP Server\HTTP Server\obj\Debug\netcoreapp3.1\HTTP Server.AssemblyInfoInputs.cache
 C:\Users\ThomasPleiner\source\repos\HTTP Server\HTTP Server\obj\Debug\netcoreapp3.1\HTTP Server.AssemblyInfo.cs
 C:\Users\ThomasPleiner\source\repos\HTTP Server\HTTP Server\obj\Debug\netcoreapp3.1\HTTP Server.csproj.CoreCompileInputs.cache
 C:\Users\ThomasPleiner\source\repos\HTTP Server\HTTP Server\obj\Debug\netcoreapp3.1\HTTP Server.dll
 C:\Users\ThomasPleiner\source\repos\HTTP Server\HTTP Server\obj\Debug\netcoreapp3.1\HTTP Server.pdb
 C:\Users\ThomasPleiner\source\repos\HTTP Server\HTTP Server\obj\Debug\netcoreapp3.1\HTTP Server.genruntimeconfig.cache
+C:\Users\ThomasPleiner\source\repos\HTTP Server\HTTP Server\obj\Debug\netcoreapp3.1\HTTP Server.csprojAssemblyReference.cache

@@ -59,15 +59,20 @@ namespace HTTP_Server
             String msg = "";
             while(reader.Peek() != -1)
             {
-                msg += reader.ReadLine() + "\n";
+                msg += (char) reader.Read();
             }
 
             Console.WriteLine("Request: \n" + msg);
-            /*
-            Request req = Request.GetRequest(msg);
-            Response resp = Response.From(req);
-            resp.Post(client.GetStream());
-            */
+
+            Request request = new Request(msg);
+            Console.WriteLine("Method:" + request.Method);
+            Console.WriteLine("Indentifier:" + request.Identifier);
+            Console.WriteLine("Command:" + request.Command);
+            Console.WriteLine("Version:" + request.Version);
+            Console.WriteLine("ContentType:" + request.ContentType);
+            Console.WriteLine("ContentLength:" + request.ContentLength);
+            Console.WriteLine("Payload:" + request.Payload);
         }
     }
 }
+
