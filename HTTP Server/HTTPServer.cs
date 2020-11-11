@@ -16,6 +16,7 @@ namespace HTTP_Server
         public const String VERSION = "HTTP/1.1";
         public const String NAME = "MCTG";
         private bool running = false;
+        Dictionary<string, string> messages = new Dictionary<string, string>();
 
         private TcpListener listener;
 
@@ -57,7 +58,8 @@ namespace HTTP_Server
         {
             StreamReader reader = new StreamReader(client.GetStream());
 
-            String msg = "";
+            string msg = "";
+            string output = "";
             while(reader.Peek() != -1)
             {
                 msg += (char) reader.Read();
@@ -73,20 +75,28 @@ namespace HTTP_Server
             Debug.WriteLine("ContentType:" + request.ContentType);
             Debug.WriteLine("ContentLength:" + request.ContentLength);
             Debug.WriteLine("Payload:" + request.Payload);
-
+            //Funktionalitäten gehören aus der Konsole in eine Response ausgelagert
             if(String.Compare(request.GetMethod(), "GET ") == 0)
             {
                 if(String.Compare(request.Identifier, "all") == 0)
                 {
+                    foreach (KeyValuePair<string, string> kvp in messages)
+                    {
+                        Console.WriteLine(" {0}: Message = {1}",
+                            kvp.Key, kvp.Value);
+                    }
                     msg = "show all messages";
                 }
                 else
                 {
+                    messages.TryGetValue(request.Identifier,out output);
+                    Console.WriteLine(output);
                     msg = "show message on position" + request.Identifier;
                 }
             }
             else if (String.Compare(request.GetMethod(), "POST ") == 0)
             {
+                messages.TryAdd(request.Identifier, request.Payload);
                 msg = "new message added";
             }
             else if (String.Compare(request.GetMethod(), "PUT ") == 0)
@@ -97,6 +107,7 @@ namespace HTTP_Server
                 }
                 else
                 {
+                    messages.Add(request.Identifier, request.Payload);
                     msg = "put new message on position " + request.Identifier;
                 }
             }
@@ -108,6 +119,7 @@ namespace HTTP_Server
                 }
                 else
                 {
+                    messages.Remove(request.Identifier);
                     msg = "message deleted on position " + request.Identifier;
                 }
             }
