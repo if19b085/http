@@ -15,7 +15,7 @@ namespace HTTP_Server
         public string ContentType;
         public string ContentLength;
         public string Payload;
-        
+
         /*Später Split mit Substrings verbessern*/
         /*String gehören noch getrimmt
          z.B. "GET " zu "GET"*/
@@ -26,8 +26,8 @@ namespace HTTP_Server
             Method = firstline[0];
             Command = firstline[1];
             Version = firstline[3];
-            
-            
+
+
             string[] identifier = firstline[2].Split(" ");
             Debug.WriteLine("*" + identifier[0] + "*");
 
@@ -49,18 +49,18 @@ namespace HTTP_Server
               }
             */
             foreach (var line in lines)
-              {
-                  string[] pairs = line.Split(":");
-                  if(String.Compare(pairs[0] , "Content-Type") == 0)
-                  {
-                      ContentType = pairs[1];
-                  }
-                  if (String.Compare(pairs[0], "Content-Length") == 0)
-                  {
-                      ContentLength = pairs[1];
-                  }
-              }
-            
+            {
+                string[] pairs = line.Split(":");
+                if (String.Compare(pairs[0], "Content-Type") == 0)
+                {
+                    ContentType = pairs[1];
+                }
+                if (String.Compare(pairs[0], "Content-Length") == 0)
+                {
+                    ContentLength = pairs[1];
+                }
+            }
+
             Payload = GetRequestMessage(_request);
         }
 
@@ -95,8 +95,8 @@ namespace HTTP_Server
 
         public string GetLogEntry()
         {
-           
-            string logEntry = Method + " /" + Command +  "/" + Identifier;
+
+            string logEntry = Method + " /" + Command + "/" + Identifier;
             return logEntry;
         }
     }

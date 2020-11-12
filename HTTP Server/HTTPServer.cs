@@ -1,9 +1,10 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 
@@ -16,6 +17,7 @@ namespace HTTP_Server
         public const String VERSION = "HTTP/1.1";
         public const String NAME = "MCTG";
         private bool running = false;
+        //int als key, der automatisch hochzählt wäre eine bessere lösung
         Dictionary<string, string> messages = new Dictionary<string, string>();
 
         private TcpListener listener;
@@ -36,7 +38,7 @@ namespace HTTP_Server
             running = true;
             listener.Start();
 
-            while(running)
+            while (running)
             {
                 //Eine Connection etablieren und diese halten sntatt immer wieder eine request-based erstellen
                 Debug.WriteLine("Waiting for connection..");
@@ -60,9 +62,9 @@ namespace HTTP_Server
 
             string msg = "";
             string output = "";
-            while(reader.Peek() != -1)
+            while (reader.Peek() != -1)
             {
-                msg += (char) reader.Read();
+                msg += (char)reader.Read();
             }
 
             Debug.WriteLine("Request: \n" + msg);
@@ -76,9 +78,9 @@ namespace HTTP_Server
             Debug.WriteLine("ContentLength:" + request.ContentLength);
             Debug.WriteLine("Payload:" + request.Payload);
             //Funktionalitäten gehören aus der Konsole in eine Response ausgelagert
-            if(String.Compare(request.GetMethod(), "GET ") == 0)
+            if (String.Compare(request.GetMethod(), "GET ") == 0)
             {
-                if(String.Compare(request.Identifier, "all") == 0)
+                if (String.Compare(request.Identifier, "all") == 0)
                 {
                     foreach (KeyValuePair<string, string> kvp in messages)
                     {
@@ -89,7 +91,7 @@ namespace HTTP_Server
                 }
                 else
                 {
-                    messages.TryGetValue(request.Identifier,out output);
+                    messages.TryGetValue(request.Identifier, out output);
                     Console.WriteLine(output);
                     msg = "show message on position" + request.Identifier;
                 }
@@ -100,7 +102,7 @@ namespace HTTP_Server
                 msg = "new message added";
             }
             else if (String.Compare(request.GetMethod(), "PUT ") == 0)
-            { 
+            {
                 if (String.Compare(request.Identifier, "all") == 0)
                 {
                     msg = "message identifier not found";
@@ -124,6 +126,12 @@ namespace HTTP_Server
                 }
             }
             Console.WriteLine(msg + " " + request.GetLogEntry());
+
+            msg = msg + " " + request.GetLogEntry();
+
+            Response response = new Response();
+            response.Post(client.GetStream(), msg, "200", "plain/text");
+           
         }
     }
 }
