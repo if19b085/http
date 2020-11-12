@@ -58,25 +58,23 @@ namespace HTTP_Server
 
         private void HandleClient(TcpClient client)
         {
+            //Wird verwendet um Message an den Client zu schreiben
+            Response response = new Response();
+            //Wird verwendet um Messages des Clients auszulesen
             StreamReader reader = new StreamReader(client.GetStream());
-
+            //Zwischenspeicher für Messages von und an den Client
             string msg = "";
-            string output = "";
+            //Zwischenspeicher für Messages an die Console
+            string log = "";
+            //Speichert den Status der bei der Response angegeben werden soll
+            string responseStatus = "200";
+            //Message wird aud dem Stream char für char in msg gespeichert
             while (reader.Peek() != -1)
             {
                 msg += (char)reader.Read();
             }
-
-            Debug.WriteLine("Request: \n" + msg);
-
+            //Wird verwendet um die Request des Clients zu Parsen
             Request request = new Request(msg);
-            Debug.WriteLine("Method:" + request.Method);
-            Debug.WriteLine("Indentifier:" + request.Identifier);
-            Debug.WriteLine("Command:" + request.Command);
-            Debug.WriteLine("Version:" + request.Version);
-            Debug.WriteLine("ContentType:" + request.ContentType);
-            Debug.WriteLine("ContentLength:" + request.ContentLength);
-            Debug.WriteLine("Payload:" + request.Payload);
             //Funktionalitäten gehören aus der Konsole in eine Response ausgelagert
             if (String.Compare(request.GetMethod(), "GET ") == 0)
             {
@@ -87,50 +85,54 @@ namespace HTTP_Server
                         Console.WriteLine(" {0}: Message = {1}",
                             kvp.Key, kvp.Value);
                     }
-                    msg = "show all messages";
+                    log = "show all messages";
                 }
                 else
                 {
-                    messages.TryGetValue(request.Identifier, out output);
-                    Console.WriteLine(output);
-                    msg = "show message on position" + request.Identifier;
+                    messages.TryGetValue(request.Identifier, out msg);
+                    log = "show message on position" + request.Identifier;
                 }
             }
             else if (String.Compare(request.GetMethod(), "POST ") == 0)
             {
                 messages.TryAdd(request.Identifier, request.Payload);
+                log = "new message added";
                 msg = "new message added";
             }
             else if (String.Compare(request.GetMethod(), "PUT ") == 0)
             {
                 if (String.Compare(request.Identifier, "all") == 0)
                 {
-                    msg = "message identifier not found";
+                    log = "message identifier not found";
+                    responseStatus = "400";
                 }
                 else
                 {
                     messages.Add(request.Identifier, request.Payload);
-                    msg = "put new message on position " + request.Identifier;
+                    log = "put new message on position " + request.Identifier;
                 }
             }
             else if (String.Compare(request.GetMethod(), "DELETE ") == 0)
             {
                 if (String.Compare(request.Identifier, "all") == 0)
                 {
-                    msg = "message identifier not found";
+                    log = "message identifier not found";
+                    responseStatus = "400";
                 }
                 else
                 {
                     messages.Remove(request.Identifier);
-                    msg = "message deleted on position " + request.Identifier;
+                    log = "message deleted on position " + request.Identifier;  
                 }
             }
-            Console.WriteLine(msg + " " + request.GetLogEntry());
+            response.Post(client.GetStream(), msg, responseStatus, "plain/text");
 
-            msg = msg + " " + request.GetLogEntry();
+            Console.WriteLine(log + " " + request.GetLogEntry());
 
-            Response response = new Response();
-            response.Post(client.GetStream(), msg, "200", "plain/text");
+            
+
+           
+           
            
         }
     }

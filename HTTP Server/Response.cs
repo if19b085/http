@@ -26,7 +26,8 @@ Content-length: 78
         */
     class Response
     {
-        public void Post(NetworkStream stream, string message,string status , string contentType)
+
+        public void Post(NetworkStream stream, string message, string status , string contentType)
         {
             StreamWriter writer = new StreamWriter(stream) { AutoFlush = true };
             StringBuilder sb = new StringBuilder();
