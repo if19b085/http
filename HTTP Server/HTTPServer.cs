@@ -80,34 +80,60 @@ namespace HTTP_Server
             {
                 if (String.Compare(request.Identifier, "all") == 0)
                 {
+                    StringBuilder messageToClient = new StringBuilder();
                     foreach (KeyValuePair<string, string> kvp in messages)
                     {
-                        Console.WriteLine(" {0}: Message = {1}",
-                            kvp.Key, kvp.Value);
+                        messageToClient.Append(kvp.Key + ":\t" + kvp.Value);
                     }
+                    msg = messageToClient.ToString();
                     log = "show all messages";
                 }
                 else
                 {
-                    messages.TryGetValue(request.Identifier, out msg);
-                    log = "show message on position" + request.Identifier;
+                    if(messages.ContainsKey(request.Identifier))
+                    {
+                        messages.TryGetValue(request.Identifier, out msg);
+                        log = "show message on position" + request.Identifier;
+                    }
+                    else
+                    {
+                        msg = "message on position " + request.Identifier + " does not exist.";
+                        responseStatus = "400";
+                    }
+                  
                 }
             }
             else if (String.Compare(request.GetMethod(), "POST ") == 0)
             {
-                messages.TryAdd(request.Identifier, request.Payload);
-                log = "new message added";
-                msg = "new message added";
+                if (String.Compare(request.Identifier, "all") == 0)
+                {
+                    msg = "unintended identifier: Use integers only";
+                    log = "unintended identifier: Use integers only";
+                }
+                else if (messages.ContainsKey(request.Identifier))
+                {
+                    log = "message on position " + request.Identifier + " does already exist.";
+                    msg = "message on position " + request.Identifier + " does already exist.";
+                    responseStatus = "400";
+                }
+                else
+                {
+                    messages.TryAdd(request.Identifier, request.Payload);
+                    log = "new message added";
+                    msg = "new message added";
+                }
+                
             }
             else if (String.Compare(request.GetMethod(), "PUT ") == 0)
             {
                 if (String.Compare(request.Identifier, "all") == 0)
                 {
-                    log = "message identifier not found";
+                    log = "message identifier not included or of wrong type";
                     responseStatus = "400";
                 }
                 else
                 {
+                    messages.Remove(request.Identifier);
                     messages.Add(request.Identifier, request.Payload);
                     log = "put new message on position " + request.Identifier;
                 }
@@ -116,13 +142,23 @@ namespace HTTP_Server
             {
                 if (String.Compare(request.Identifier, "all") == 0)
                 {
-                    log = "message identifier not found";
+                    log = "message identifier not included";
                     responseStatus = "400";
                 }
                 else
                 {
-                    messages.Remove(request.Identifier);
-                    log = "message deleted on position " + request.Identifier;  
+                    if(messages.ContainsKey(request.Identifier))
+                    {
+                        messages.Remove(request.Identifier);
+                        log = "message deleted on position " + request.Identifier;
+                        msg = "message deleted on position " + request.Identifier;
+                    }
+                    else
+                    {
+                        log = "message on position " + request.Identifier + " does not exist.";
+                        msg = "message on position " + request.Identifier + " does not exist.";
+                    }
+                    
                 }
             }
             response.Post(client.GetStream(), msg, responseStatus, "plain/text");

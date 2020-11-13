@@ -8,13 +8,13 @@ namespace HTTP_Server
 {
     class Request
     {
-        public string Method;
-        public string Command;
-        public string Identifier;
-        public string Version;
-        public string ContentType;
-        public string ContentLength;
-        public string Payload;
+        public string Method { get; } 
+        public string Command { get; }
+        public string Identifier { get; }
+        public string Version { get; }
+        public string ContentType { get; }
+        public string ContentLength { get; }
+        public string Payload { get; }
 
         /*Später Split mit Substrings verbessern*/
         /*String gehören noch getrimmt
@@ -31,7 +31,7 @@ namespace HTTP_Server
             string[] identifier = firstline[2].Split(" ");
             Debug.WriteLine("*" + identifier[0] + "*");
 
-            if (string.IsNullOrEmpty(identifier[0]) || String.Compare(identifier[0], "all ") == 0)
+            if (!isCorrectIdentifier(identifier[0]))
             {
                 Identifier = "all";
             }
@@ -98,6 +98,27 @@ namespace HTTP_Server
 
             string logEntry = Method + " /" + Command + "/" + Identifier;
             return logEntry;
+        }
+
+        private bool isCorrectIdentifier(string identifier)
+        {
+            if(string.IsNullOrEmpty(identifier))
+            {
+                return false;
+            }
+            for (int i = 0; i < identifier.Length; i++)
+            {
+                if (Char.IsNumber(identifier[i]))
+                {
+                    continue;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
